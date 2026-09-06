@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Medicines{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="fw-bold mb-1" style="color:#0f2a3c;"><i class="bi bi-capsule"></i> Medicines</h4>
+    <p class="small text-muted mb-0">Track expiry — Green Safe, Orange Soon, Red Expired</p>
+  </div>
+  <a href="{% url 'medicine_add' %}" class="btn btn-teal"><i class="bi bi-plus-lg"></i> Add Medicine</a>
+</div>
+
+<div class="card p-2 mb-3">
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="{% url 'medicine_list' %}" class="btn btn-sm {% if not filter_status %}btn-dark{% else %}btn-outline-secondary{% endif %}">All</a>
+    <a href="?filter=Safe" class="btn btn-sm {% if filter_status == 'Safe' %}btn-success{% else %}btn-outline-success{% endif %}">Safe</a>
+    <a href="?filter=Expiring Soon" class="btn btn-sm {% if filter_status == 'Expiring Soon' %}btn-warning{% else %}btn-outline-warning{% endif %}">Expiring Soon</a>
+    <a href="?filter=Expired" class="btn btn-sm {% if filter_status == 'Expired' %}btn-danger{% else %}btn-outline-danger{% endif %}">Expired</a>
+  </div>
+</div>
+
+<div class="card">
+  {% if medicines %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>#</th><th>Name</th><th>Qty</th><th>Expiry Date</th><th>Days Left</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for m in medicines %}
+        <tr>
+          <td class="small text-muted">{{ forloop.counter }}</td>
+          <td class="fw-semibold">{{ m.name }}</td>
+          <td>{{ m.quantity }}</td>
+          <td>{{ m.expiry_date|date:"d M Y" }}</td>
+          <td class="small">
+            {% if m.days_until_expiry < 0 %}<span class="text-danger fw-semibold">{{ m.days_until_expiry }} days (expired)</span>
+            {% elif m.days_until_expiry == 0 %}<span class="text-warning fw-semibold">Expires today</span>
+            {% else %}{{ m.days_until_expiry }} days{% endif %}
+          </td>
+          <td><span class="badge {{ m.status_badge }}">{{ m.status }}</span></td>
+          <td class="text-end">
+            <a href="{% url 'medicine_edit' m.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'medicine_delete' m.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <i class="bi bi-capsule fs-1 text-muted"></i>
+      <p class="mt-2">No medicines found {% if filter_status %}for <strong>{{ filter_status }}</strong>{% endif %}.</p>
+      <a href="{% url 'medicine_add' %}" class="btn btn-teal btn-sm">Add your first medicine</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

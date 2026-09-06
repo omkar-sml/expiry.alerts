@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-1" style="color:#0f2a3c;">Dashboard</h3>
+    <p class="text-muted small mb-0">Welcome, <strong>{{ user.username }}</strong> — offline phone alerts enabled (allow notifications)</p>
+  </div>
+  <div class="d-none d-md-block">
+    <span class="badge bg-light text-dark border"><i class="bi bi-calendar3"></i> Today: {% now "d M Y" %}</span>
+  </div>
+</div>
+
+{% if recent_notifs %}
+<div class="card border-warning mb-3">
+  <div class="card-header bg-warning bg-opacity-25 d-flex justify-content-between align-items-center">
+    <strong class="small"><i class="bi bi-bell-fill text-warning"></i> Alerts — {{ recent_notifs|length }} new (offline phone will also notify)</strong>
+    <a href="{% url 'notification_list' %}" class="btn btn-sm btn-warning">View All</a>
+  </div>
+  <div class="list-group list-group-flush">
+    {% for n in recent_notifs %}
+      <div class="list-group-item d-flex justify-content-between align-items-start py-2">
+        <div>
+          <span class="badge {% if n.level == 'danger' %}bg-danger{% else %}bg-warning text-dark{% endif %} me-1">{{ n.level|upper }}</span>
+          <strong class="small">{{ n.title }}</strong>
+          <div class="small text-muted">{{ n.message }}</div>
+        </div>
+        <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card p-3 primary">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="small text-muted">Total Medicines</div><div class="h3 fw-bold mb-0" style="color:#0f2a3c;">{{ total_medicines }}</div></div>
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:42px;height:42px;background:#e8f5f2;color:#00c2a8;"><i class="bi bi-capsule"></i></div>
+      </div>
+      <a href="{% url 'medicine_list' %}" class="small text-decoration-none" style="color:#00c2a8;">View all →</a>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card p-3" style="border-left-color:#00c2a8;">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="small text-muted">Total Food Items</div><div class="h3 fw-bold mb-0" style="color:#0f2a3c;">{{ total_foods }}</div></div>
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:42px;height:42px;background:#f0f9ff;color:#0f2a3c;"><i class="bi bi-basket"></i></div>
+      </div>
+      <a href="{% url 'food_list' %}" class="small text-decoration-none" style="color:#00c2a8;">View all →</a>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card p-3 warning">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="small text-muted">Expiring Soon <span class="text-muted">(≤7 days)</span></div><div class="h3 fw-bold mb-0 text-warning">{{ expiring_soon }}</div></div>
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:42px;height:42px;background:#fff3cd;color:#b7791f;"><i class="bi bi-clock-history"></i></div>
+      </div>
+      <div class="small"><span class="badge badge-soon">Orange</span> needs attention</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card p-3 danger">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="small text-muted">Expired Items</div><div class="h3 fw-bold mb-0 text-danger">{{ expired }}</div></div>
+        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:42px;height:42px;background:#fde8e8;color:#dc3545;"><i class="bi bi-exclamation-triangle"></i></div>
+      </div>
+      <div class="small"><span class="badge bg-danger">Red</span> do not use</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0" style="color:#0f2a3c;"><i class="bi bi-bell-fill text-warning"></i> Critical — Needs Attention</h6>
+        <span class="small text-muted">{{ critical|length }} items</span>
+      </div>
+      {% if critical %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead><tr><th>Name</th><th>Type</th><th>Expiry</th><th>Status</th><th>Days</th></tr></thead>
+            <tbody>
+              {% for item in critical %}
+              <tr>
+                <td class="fw-semibold small">{{ item.name }}</td>
+                <td class="small text-muted">{% if item.quantity %}{{ item.quantity }} units{% endif %}</td>
+                <td class="small">{{ item.expiry_date|date:"d M Y" }}</td>
+                <td><span class="badge {{ item.status_badge }} small">{{ item.status }}</span></td>
+                <td class="small">{% if item.days_until_expiry < 0 %}{{ item.days_until_expiry }} days{% else %}{{ item.days_until_expiry }} days left{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="bi bi-check-circle fs-2 text-success"></i>
+          <p class="mt-2 mb-0">All good! No expiring or expired items.</p>
+          <p class="small text-muted">Keep adding products to stay on top of expiry.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card p-3 h-100">
+      <h6 class="fw-bold" style="color:#0f2a3c;">Offline phone alerts</h6>
+      <p class="small text-muted">No email/OTP needed. In-app bell + browser notification on phone. Allow notifications in footer, then expiry alerts pop even offline.</p>
+      <div class="d-flex flex-column gap-2 mt-2">
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#e8f5e9;"><span class="badge bg-success">Safe</span><span class="small">More than 7 days — Green</span></div>
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#fff8e1;"><span class="badge badge-soon">Expiring Soon</span><span class="small">Within 7 days — Orange → phone notify</span></div>
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#fdecea;"><span class="badge bg-danger">Expired</span><span class="small">Past expiry — Red → phone notify</span></div>
+      </div>
+      <hr>
+      <div class="small">
+        <div class="d-flex justify-content-between"><span class="text-muted">Safe items</span><strong class="text-success">{{ safe }}</strong></div>
+        <div class="d-flex justify-content-between"><span class="text-muted">Total tracked</span><strong style="color:#0f2a3c;">{{ total_medicines|add:total_foods }}</strong></div>
+      </div>
+      <div class="d-grid gap-2 mt-3">
+        <a href="{% url 'medicine_add' %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg"></i> Add Medicine</a>
+        <a href="{% url 'food_add' %}" class="btn btn-sm btn-outline-success"><i class="bi bi-plus-lg"></i> Add Food</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0" style="color:#0f2a3c;"><i class="bi bi-capsule"></i> Recent Medicines</h6>
+        <a href="{% url 'medicine_list' %}" class="small" style="color:#00c2a8;">View all</a>
+      </div>
+      {% if medicines %}
+        {% for m in medicines %}
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <div><div class="fw-semibold small">{{ m.name }}</div><div class="small text-muted">{{ m.quantity }} • {{ m.expiry_date|date:"d M Y" }}</div></div>
+            <span class="badge {{ m.status_badge }}">{{ m.status }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="small text-muted text-center py-3 mb-0">No medicines yet. <a href="{% url 'medicine_add' %}">Add one</a></p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0" style="color:#0f2a3c;"><i class="bi bi-basket"></i> Recent Food Items</h6>
+        <a href="{% url 'food_list' %}" class="small" style="color:#00c2a8;">View all</a>
+      </div>
+      {% if foods %}
+        {% for f in foods %}
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <div><div class="fw-semibold small">{{ f.name }}</div><div class="small text-muted">{{ f.quantity }} • {{ f.expiry_date|date:"d M Y" }}</div></div>
+            <span class="badge {{ f.status_badge }}">{{ f.status }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="small text-muted text-center py-3 mb-0">No food items yet. <a href="{% url 'food_add' %}">Add one</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

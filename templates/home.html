@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="hero p-4 p-md-5 mb-4">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <div class="badge bg-light text-dark mb-3 px-3 py-2">EXPIRY.ALERT — v1.0</div>
+      <h1 class="display-5 fw-bold">Smart Household<br><span style="color:#00c2a8;">Expiry Management</span></h1>
+      <p class="lead text-white-50 mt-3">A simple system that helps households prevent unsafe use and reduce avoidable product waste — before expiry dates arrive.</p>
+      <div class="d-flex gap-2 mt-4">
+        <a href="{% url 'register' %}" class="btn btn-teal btn-lg px-4">Get Started — Free</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+      </div>
+      <div class="d-flex gap-4 mt-4 small text-white-50">
+        <span><i class="bi bi-check-circle-fill text-success"></i> Food + Medicine</span>
+        <span><i class="bi bi-check-circle-fill text-success"></i> Auto expiry check</span>
+        <span><i class="bi bi-check-circle-fill text-success"></i> Timely alerts</span>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <strong style="color:#0f2a3c;">My Inventory</strong>
+          <span class="badge bg-danger">3 alerts</span>
+        </div>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#fff3cd; border-left:4px solid #ffc857;">
+            <div><div class="fw-semibold small">Milk • Dairy</div><div class="text-muted small">Expires in 2 days</div></div>
+            <span class="badge" style="background:#ffc857; color:#0f2a3c;">02 days</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#e8f5f2; border-left:4px solid #00c2a8;">
+            <div><div class="fw-semibold small">Amoxicillin • Medicine</div><div class="text-muted small">Expires in 5 days</div></div>
+            <span class="badge" style="background:#00c2a8;">05 days</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#fde8e8; border-left:4px solid #dc3545;">
+            <div><div class="fw-semibold small">Bread • Bakery</div><div class="text-muted small">Expired yesterday</div></div>
+            <span class="badge bg-danger">EXPIRED</span>
+          </div>
+        </div>
+        <div class="text-center small text-muted mt-3">Daily job checks dates • Color-coded status</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card h-100 p-3 text-center">
+      <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle mb-2" style="width:48px;height:48px;background:#e8f5f2;color:#00c2a8;"><i class="bi bi-plus-lg fs-4"></i></div>
+      <h6 class="fw-bold" style="color:#0f2a3c;">ADD PRODUCTS</h6>
+      <p class="small text-muted mb-0">Food or medicine with expiry dates, quantity and category.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 p-3 text-center">
+      <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle mb-2" style="width:48px;height:48px;background:#e8f5f2;color:#00c2a8;"><i class="bi bi-eye fs-4"></i></div>
+      <h6 class="fw-bold" style="color:#0f2a3c;">TRACK EXPIRY</h6>
+      <p class="small text-muted mb-0">Automatic daily status checks — Safe, Expiring Soon, Expired.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 p-3 text-center">
+      <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle mb-2" style="width:48px;height:48px;background:#fff3cd;color:#ff6b35;"><i class="bi bi-bell fs-4"></i></div>
+      <h6 class="fw-bold" style="color:#0f2a3c;">GET REMINDERS</h6>
+      <p class="small text-muted mb-0">Timely alerts before items expire — dashboard badges.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card p-4">
+  <h5 class="fw-bold" style="color:#0f2a3c;">Why EXPIRY.ALERT?</h5>
+  <div class="row g-3 mt-1">
+    <div class="col-md-3"><div class="p-3 rounded" style="background:#f7f9fb;"><strong class="small">Memory-dependent?</strong><p class="small text-muted mb-0">No more remembering dates for every item. One place for all.</p></div></div>
+    <div class="col-md-3"><div class="p-3 rounded" style="background:#f7f9fb;"><strong class="small">No early warning?</strong><p class="small text-muted mb-0">Get warnings 7 days before expiry — act in time.</p></div></div>
+    <div class="col-md-3"><div class="p-3 rounded" style="background:#f7f9fb;"><strong class="small">Scattered info?</strong><p class="small text-muted mb-0">Food & medicine centralized, searchable, color-coded.</p></div></div>
+    <div class="col-md-3"><div class="p-3 rounded" style="background:#f7f9fb;"><strong class="small">Health & waste risk?</strong><p class="small text-muted mb-0">Avoid unsafe use and reduce waste & cost.</p></div></div>
+  </div>
+</div>
+{% endblock %}

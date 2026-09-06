@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Verify Email{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card p-4">
+      <h5 class="fw-bold" style="color:#0f2a3c;"><i class="bi bi-shield-check"></i> Email verification</h5>
+      <p class="small text-muted">Your current email: <strong>{{ request.user.email|default:"(not set)" }}</strong>
+        {% if profile.is_email_verified %}
+          <span class="badge bg-success ms-1"><i class="bi bi-check-circle"></i> Verified</span>
+          <span class="small text-muted">({{ profile.verified_email }} at {{ profile.email_verified_at|date:"d M Y H:i" }})</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Not verified</span> — you won't receive expiry alerts until verified.
+        {% endif %}
+      </p>
+      <hr>
+      <h6 class="small fw-bold">Change / verify email</h6>
+      <p class="small text-muted">Enter email and we will send a 6-digit OTP. Verify to confirm and receive notifications there.</p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">{{ form.email.label }}</label>
+          {{ form.email }}
+          {% for error in form.email.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        <button class="btn btn-teal px-4"><i class="bi bi-send"></i> Send OTP</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+      </form>
+      <div class="alert alert-info small mt-3 mb-0">
+        <i class="bi bi-info-circle"></i> Console backend prints OTP to terminal. Check <code>/tmp/expiry_run.log</code> or runserver window. For real SMTP, set env vars per README.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

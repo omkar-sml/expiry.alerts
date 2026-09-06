@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card p-4">
+      <h4 class="fw-bold" style="color:#0f2a3c;"><i class="bi bi-envelope-paper"></i> Contact / Feedback</h4>
+      <p class="small text-muted">Send a message via <strong>Formspree</strong> <code>https://formspree.io/f/xeaqlvwp</code> — no SMTP needed.</p>
+      
+      <!-- Direct Formspree form (works even if JS disabled) -->
+      <form action="https://formspree.io/f/xeaqlvwp" method="POST" class="needs-validation" novalidate>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Your Email</label>
+            <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Your name" value="{{ request.user.username|default:'' }}">
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold">Subject</label>
+            <input type="text" name="_subject" class="form-control" placeholder="e.g. Help with expiry alerts" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold">Message</label>
+            <textarea name="message" rows="4" class="form-control" placeholder="Write your message..." required></textarea>
+          </div>
+          <input type="hidden" name="_replyto" value="">
+          <div class="col-12 d-grid">
+            <button type="submit" class="btn btn-teal py-2"><i class="bi bi-send"></i> Send via Formspree</button>
+          </div>
+        </div>
+      </form>
+
+      <hr>
+      <div class="alert alert-info small">
+        Offline ready — form posts to <code>https://formspree.io/f/xeaqlvwp</code> when online, cached when offline.
+      </div>
+
+      <div class="small text-muted mt-3"><i class="bi bi-info-circle"></i> Offline app: contact form also works offline — cached, will queue until online (PWA).</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

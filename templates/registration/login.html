@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card p-4">
+      <div class="text-center mb-3">
+        <h4 class="fw-bold" style="color:#0f2a3c;"><i class="bi bi-box-arrow-in-right"></i> Welcome Back</h4>
+        <p class="small text-muted">Login to your EXPIRY.ALERT account</p>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Username</label>
+          <input type="text" name="username" class="form-control" placeholder="Enter username" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+        </div>
+        {% if form.errors %}
+          <div class="alert alert-danger small">Invalid username or password. Please try again.</div>
+        {% endif %}
+        <button type="submit" class="btn btn-teal w-100 py-2 fw-semibold">Login</button>
+      </form>
+      <div class="text-center mt-3 small">
+        Don't have an account? <a href="{% url 'register' %}" class="fw-semibold" style="color:#00c2a8;">Register</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

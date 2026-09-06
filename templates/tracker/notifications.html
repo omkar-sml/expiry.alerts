@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h4 class="fw-bold mb-1" style="color:#0f2a3c;"><i class="bi bi-bell-fill"></i> Notifications</h4>
+    <p class="small text-muted mb-0">Alerts for expiring and expired products — auto-created daily</p>
+  </div>
+  <div class="d-flex gap-2">
+    {% if unread_count > 0 %}
+      <form method="post" action="{% url 'notification_mark_all_read' %}">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-check-all"></i> Mark all read</button>
+      </form>
+    {% endif %}
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary">Back to Dashboard</a>
+  </div>
+</div>
+
+<div class="card p-2 mb-3">
+  <div class="d-flex gap-2 flex-wrap align-items-center">
+    <span class="small text-muted me-2">Filter:</span>
+    <a href="{% url 'notification_list' %}" class="btn btn-sm {% if not filter_level %}btn-dark{% else %}btn-outline-secondary{% endif %}">All {% if not filter_level %}({{ notifications|length }}){% endif %}</a>
+    <a href="?level=danger" class="btn btn-sm {% if filter_level == 'danger' %}btn-danger{% else %}btn-outline-danger{% endif %}">Expired</a>
+    <a href="?level=warning" class="btn btn-sm {% if filter_level == 'warning' %}btn-warning{% else %}btn-outline-warning{% endif %}">Expiring Soon</a>
+    <span class="ms-auto small text-muted">{{ unread_count }} unread</span>
+  </div>
+</div>
+
+<div class="card">
+  {% if notifications %}
+    <div class="list-group list-group-flush">
+      {% for n in notifications %}
+        <div class="list-group-item {% if not n.is_read %}list-group-item-warning{% endif %}">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge {% if n.level == 'danger' %}bg-danger{% elif n.level == 'warning' %}bg-warning text-dark{% else %}bg-info{% endif %}">{{ n.level|upper }}</span>
+                {% if not n.is_read %}<span class="badge bg-primary">NEW</span>{% endif %}
+                <strong class="small" style="color:#0f2a3c;">{{ n.title }}</strong>
+                {% if n.item_type %}<span class="badge bg-light text-dark border small">{{ n.item_type|title }} • {{ n.item_name }}</span>{% endif %}
+              </div>
+              <p class="small text-muted mb-1">{{ n.message }}</p>
+              <div class="small text-muted">
+                <i class="bi bi-calendar"></i> Expiry: {{ n.expiry_date|date:"d M Y"|default:"—" }} &bull;
+                <i class="bi bi-clock"></i> {{ n.created_at|date:"d M Y H:i" }} ({{ n.created_at|timesince }} ago)
+              </div>
+            </div>
+            <div class="d-flex flex-column gap-1 ms-2">
+              {% if not n.is_read %}
+                <a href="{% url 'notification_mark_read' n.pk %}" class="btn btn-sm btn-outline-primary" title="Mark read"><i class="bi bi-check"></i></a>
+              {% else %}
+                <span class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-check-all"></i></span>
+              {% endif %}
+              <form method="post" action="{% url 'notification_delete' n.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <i class="bi bi-bell-slash fs-1 text-muted"></i>
+      <p class="mt-2">No notifications yet.</p>
+      <p class="small text-muted">When a product is expiring within 7 days or already expired, you'll get an alert here automatically.</p>
+    </div>
+  {% endif %}
+</div>
+
+<div class="card mt-3 p-3" style="background:#f7f9fb;">
+  <h6 class="small fw-bold" style="color:#0f2a3c;"><i class="bi bi-lightbulb"></i> How notifications work</h6>
+  <ul class="small text-muted mb-0 ps-3">
+    <li><span class="badge bg-danger">Red = Expired</span> — past expiry.</li>
+    <li><span class="badge bg-warning text-dark">Orange = Expiring Soon</span> — within 7 days.</li>
+    <li>Offline phone: allow browser notification in footer — phone pops even offline (Web Notifications API + PWA).</li>
+    <li>Bell + banner + this list work fully offline (data in SQLite, cached via service worker).</li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{
+  "appId": "com.yash.expiryalert",
+  "appName": "EXPIRY.ALERT",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#0f2a3c"
+    }
+  }
+}

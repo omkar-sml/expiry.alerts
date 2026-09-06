@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card p-4">
+      <div class="text-center mb-3">
+        <h4 class="fw-bold" style="color:#0f2a3c;"><i class="bi bi-person-plus"></i> Create Account</h4>
+        <p class="small text-muted">Join EXPIRY.ALERT — track food & medicine expiry</p>
+      </div>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text small">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <button type="submit" class="btn btn-teal w-100 py-2 fw-semibold">Create Account</button>
+      </form>
+      <div class="text-center mt-3 small">
+        Already have an account? <a href="{% url 'login' %}" class="fw-semibold" style="color:#00c2a8;">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
